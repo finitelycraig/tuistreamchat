@@ -17,6 +17,15 @@ ssh tuistream.chat
 This TUI app can be run locally, if the appropriate TWTICHANNEL and TWITCHAUTH
 environment variables are set.
 
+`make run`
+
 ### Warning
 
 The local version is currently buggy.
+
+## Running locally over ssh
+
+This TUI app can be run locally over ssh.
+
+`make serve`
+
