@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"github.com/acarl005/stripansi"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -177,10 +178,12 @@ func (c *Chat) wordWrap(msg string) string {
 	if len(words) == 0 {
 		return ""
 	}
+	//stripansi.Strip(msg)
 	wrapped := words[0]
 	lineWidth := c.viewport.Width - 2 // for the sides
-	spaceLeft := lineWidth - len(wrapped) + 15
+	spaceLeft := lineWidth - len(stripansi.Strip(wrapped))
 	for _, word := range words[1:] {
+		word = stripansi.Strip(word)
 		if len(word)+1 > spaceLeft {
 			if len(word) > lineWidth {
 				wordLength := 0
