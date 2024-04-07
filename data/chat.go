@@ -183,12 +183,16 @@ func (c *Chat) wordWrap(msg string) string {
 	for _, word := range words[1:] {
 		if len(word)+1 > spaceLeft {
 			if len(word) > lineWidth {
+				wordLength := 0
 				for i, c := range word {
 					if i%(lineWidth) == 0 {
 						wrapped += "\n"
+						wordLength = 0
 					}
 					wrapped += string(c)
+					wordLength++
 				}
+				spaceLeft = lineWidth - wordLength
 			} else {
 				wrapped += "\n" + word
 				spaceLeft = lineWidth - len(word)
@@ -204,10 +208,10 @@ func (c *Chat) wordWrap(msg string) string {
 func (c *Chat) concatMessage(msg string) {
 	c.messages = append(c.messages, msg)
 	c.messagesWidthWrapped = append(c.messagesWidthWrapped, strings.Split(c.wordWrap(msg), "\n")...)
-	c.logger.Info().Msg(fmt.Sprintf("displaying %d lines of messages", len(c.messagesWidthWrapped)))
-	for _, msg := range c.messagesWidthWrapped {
-		c.logger.Info().Msg(fmt.Sprintf("%s", msg))
-	}
+	//c.logger.Info().Msg(fmt.Sprintf("displaying %d lines of messages", len(c.messagesWidthWrapped)))
+	//for _, msg := range c.messagesWidthWrapped {
+	//	c.logger.Info().Msg(fmt.Sprintf("%s", msg))
+	//}
 }
 
 func (c *Chat) formattedMessages() string {
