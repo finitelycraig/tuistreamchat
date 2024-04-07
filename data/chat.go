@@ -178,8 +178,8 @@ func (c *Chat) wordWrap(msg string) string {
 		return ""
 	}
 	wrapped := words[0]
-	lineWidth := c.viewport.Width - 2     // for the sides
-	spaceLeft := lineWidth - len(wrapped) // + 15
+	lineWidth := c.viewport.Width - 2 // for the sides
+	spaceLeft := lineWidth - len(wrapped) + 15
 	for _, word := range words[1:] {
 		if len(word)+1 > spaceLeft {
 			if len(word) > lineWidth {
