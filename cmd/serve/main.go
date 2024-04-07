@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
 	"github.com/finitelycraig/tuistreamchat/internal"
 	"github.com/rs/zerolog"
+	"os"
 )
 
 func main() {

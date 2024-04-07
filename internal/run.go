@@ -1,46 +1,45 @@
 package internal
 
 import (
-    "context"
-    "fmt"
-    "net"
+	"context"
+	"fmt"
+	"net"
 	"os"
-    "os/signal"
-    "syscall"
-    "time"
+	"os/signal"
+	"syscall"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-    "github.com/charmbracelet/ssh"
-    "github.com/charmbracelet/wish"
-    "github.com/charmbracelet/wish/activeterm"
-    "github.com/charmbracelet/wish/bubbletea"
+	"github.com/charmbracelet/ssh"
+	"github.com/charmbracelet/wish"
+	"github.com/charmbracelet/wish/activeterm"
+	"github.com/charmbracelet/wish/bubbletea"
 	"github.com/finitelycraig/tuistreamchat/data"
-	"github.com/rs/zerolog"
 	"github.com/muesli/termenv"
+	"github.com/rs/zerolog"
 )
-
 
 func RunHosted(logger zerolog.Logger) {
 	user := os.Getenv("TWITCHBOT")
-    oauth := os.Getenv("TWITCHOAUTH")
+	oauth := os.Getenv("TWITCHOAUTH")
 	logger.Info().Msg(fmt.Sprintf("Starting a room with host %s", user))
 	sync := make(chan tea.Msg)
-    chat := data.NewChat(sync, logger)
-    chat.SetUpChannel(user, oauth)
-    p := tea.NewProgram(chat, tea.WithAltScreen())
-    if _, err := p.Run(); err != nil {
-       os.Exit(0) 
-    }
+	chat := data.NewChat(sync, logger)
+	chat.SetUpChannel(user, oauth)
+	p := tea.NewProgram(chat, tea.WithAltScreen())
+	if _, err := p.Run(); err != nil {
+		os.Exit(0)
+	}
 }
 
 func RunUnHosted(logger zerolog.Logger) {
 	logger.Info().Msg(fmt.Sprintf("Starting a room without a host"))
 	sync := make(chan tea.Msg)
-    chat := data.NewAnonymousChat(sync, logger)
-    p := tea.NewProgram(chat, tea.WithAltScreen())
-    if _, err := p.Run(); err != nil {
-       os.Exit(0) 
-    }
+	chat := data.NewAnonymousChat(sync, logger)
+	p := tea.NewProgram(chat, tea.WithAltScreen())
+	if _, err := p.Run(); err != nil {
+		os.Exit(0)
+	}
 }
 
 const (
@@ -50,7 +49,7 @@ const (
 
 type app struct {
 	*ssh.Server
-    logger zerolog.Logger
+	logger zerolog.Logger
 }
 
 func newApp(log zerolog.Logger) *app {
@@ -63,7 +62,7 @@ func newApp(log zerolog.Logger) *app {
 			activeterm.Middleware(),
 		),
 	)
-    a.logger = log
+	a.logger = log
 	if err != nil {
 		log.Error().Err(err).Msg("Could not start new app")
 	}
@@ -96,9 +95,9 @@ func (a *app) Start() {
 func (a *app) ProgramHandler(s ssh.Session) *tea.Program {
 	a.logger.Info().Msg(fmt.Sprintf("Starting a room without a host"))
 	sync := make(chan tea.Msg)
-    chat := data.NewAnonymousChat(sync, a.logger)
-    programOptions := bubbletea.MakeOptions(s)
-    programOptions = append(programOptions, tea.WithAltScreen())
+	chat := data.NewAnonymousChat(sync, a.logger)
+	programOptions := bubbletea.MakeOptions(s)
+	programOptions = append(programOptions, tea.WithAltScreen())
 	p := tea.NewProgram(chat, programOptions...)
 
 	return p
